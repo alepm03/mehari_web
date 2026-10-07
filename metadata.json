@@ -1,0 +1,6 @@
+{
+  "name": "Mehari W&E — Bodas & Sevilla Experience",
+  "description": "Alquiler de Citroën Méhari clásicos restaurados con chófer para bodas y tours exclusivos por Sevilla. Salida de iglesia, entrada de cine y rutas a cielo abierto.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

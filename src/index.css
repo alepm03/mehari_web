@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: 'Fraunces', Georgia, serif;
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --color-cream: #F1E6CF;
+  --color-cream-light: #FAF6EE;
+  --color-cream-dark: #E6D8BC;
+  --color-orange: #E8702A;
+  --color-orange-dark: #D45F1C;
+  --color-albero: #D9B27C;
+  --color-albero-dark: #C29A64;
+  --color-teal: #1E6F6B;
+  --color-teal-dark: #165653;
+  --color-ink: #2A211B;
+  --color-ink-muted: #5E5248;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    background-color: #F1E6CF;
+    color: #2A211B;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .font-serif-display {
+    font-family: var(--font-serif);
+  }
+}
+
+/* Méhari Signature Body Ribbing Pattern (Estrías de carrocería ABS) */
+.mehari-ribbing {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 8px,
+    rgba(42, 33, 27, 0.05) 8px,
+    rgba(42, 33, 27, 0.05) 12px
+  );
+}
+
+.mehari-ribbing-dark {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 8px,
+    rgba(241, 230, 207, 0.06) 8px,
+    rgba(241, 230, 207, 0.06) 12px
+  );
+}
+
+.mehari-ribbing-accent {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 6px,
+    rgba(232, 112, 42, 0.08) 6px,
+    rgba(232, 112, 42, 0.08) 9px
+  );
+}
+
+/* Hairline dividers & borders */
+.border-hairline {
+  border-color: rgba(42, 33, 27, 0.12);
+}
+
+.border-hairline-light {
+  border-color: rgba(241, 230, 207, 0.15);
+}
+
+/* Smooth custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #E8D9BD;
+}
+::-webkit-scrollbar-thumb {
+  background: #C4B094;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A69275;
+}
