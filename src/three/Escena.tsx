@@ -1,6 +1,6 @@
-import { ContactShadows, Environment, Lightformer, OrbitControls } from '@react-three/drei';
+import { ContactShadows, Environment, Lightformer, OrbitControls, Preload } from '@react-three/drei';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { Mehari, type ColorCoche, type Techo } from './Mehari';
 
@@ -10,7 +10,8 @@ function CamaraEntrada() {
   const t = useRef(0);
   useFrame((_, dt) => {
     if (t.current >= 1) return;
-    t.current = Math.min(1, t.current + dt / 2.2);
+    // la escena puede llevar un rato montada en pausa: se limita dt para que la entrada no se salte
+    t.current = Math.min(1, t.current + Math.min(dt, 1 / 30) / 2.2);
     const e = 1 - Math.pow(1 - t.current, 3);
     const ang = THREE.MathUtils.lerp(1.6, 0.75, e);
     const r = THREE.MathUtils.lerp(10.5, 7.4, e);
@@ -63,7 +64,11 @@ export default function Escena({ color, techo, flores, activa }: { color: ColorC
         <Lightformer form="ring" intensity={1.5} color="#EE7D1F" position={[0, 1, -8]} scale={4} />
       </Environment>
 
-      <Mehari color={color} techo={techo} flores={flores} />
+      <Suspense fallback={null}>
+        <Mehari color={color} techo={techo} flores={flores} />
+        {/* compila shaders y sube texturas a la GPU nada más cargar, aunque la escena esté en pausa */}
+        <Preload all />
+      </Suspense>
       <ContactShadows position={[0, 0, 0]} opacity={0.55} scale={9} blur={2.6} far={2} resolution={512} color="#1a120c" />
 
       <OrbitControls
