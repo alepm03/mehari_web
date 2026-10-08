@@ -1,11 +1,38 @@
 import { AnimatePresence, motion, useInView } from 'motion/react';
-import { lazy, Suspense, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { TALLER } from '../data/contenido';
 import { useSitio } from '../i18n/contexto';
 import type { ColorCoche, Techo } from '../three/Mehari';
 import { Etiqueta, TitularMascara } from './ui';
 
-const Escena = lazy(() => import('../three/Escena'));
+const cargarEscena = () => import('../three/Escena');
+const Escena = lazy(cargarEscena);
+
+/**
+ * Precarga el coche en cuanto el navegador queda libre (mientras se ve la portada):
+ * descarga el código 3D y el modelo, y monta la escena en pausa para que, al llegar
+ * a la sección, el Méhari aparezca al momento.
+ */
+function usePrecargaEscena() {
+  const [lista, setLista] = useState(false);
+  useEffect(() => {
+    let cancelado = false;
+    const empezar = () => {
+      cargarEscena().then(() => {
+        if (!cancelado) setLista(true);
+      });
+    };
+    // Safari no tiene requestIdleCallback: ahí basta con un pequeño retraso
+    const conIdle = typeof window.requestIdleCallback === 'function';
+    const id = conIdle ? window.requestIdleCallback(empezar, { timeout: 2000 }) : globalThis.setTimeout(empezar, 800);
+    return () => {
+      cancelado = true;
+      if (conIdle) window.cancelIdleCallback(id as number);
+      else globalThis.clearTimeout(id);
+    };
+  }, []);
+  return lista;
+}
 
 const TECHOS: Techo[] = ['abierto', 'semiabierto', 'cerrado'];
 
@@ -29,6 +56,7 @@ export function Taller() {
   const ref = useRef<HTMLElement>(null);
   const cerca = useInView(ref, { margin: '300px 0px 300px 0px' });
   const visto = useInView(ref, { once: true, margin: '300px 0px 300px 0px' });
+  const precargada = usePrecargaEscena();
   const [color, setColor] = useState<ColorCoche>('naranja');
   const [techo, setTecho] = useState<Techo>('semiabierto');
   const [flores, setFlores] = useState(true);
@@ -64,7 +92,7 @@ export function Taller() {
           </AnimatePresence>
 
           <div className="absolute inset-0 cursor-grab active:cursor-grabbing">
-            {visto && (
+            {(visto || precargada) && (
               <Suspense fallback={null}>
                 <Escena color={color} techo={techo} flores={flores} activa={cerca} />
               </Suspense>
