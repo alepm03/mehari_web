@@ -13,7 +13,9 @@ export function empezarArriba() {
   window.addEventListener('pageshow', (e) => e.persisted && window.scrollTo(0, 0));
 }
 
+let ultimoGesto = 0;
 const bloquearEvento = (e: Event) => {
+  ultimoGesto = performance.now();
   e.preventDefault();
   e.stopImmediatePropagation();
 };
@@ -32,6 +34,18 @@ export function pausarScroll() {
   window.addEventListener('wheel', bloquearEvento, OPCIONES);
   window.addEventListener('touchmove', bloquearEvento, OPCIONES);
   window.addEventListener('keydown', bloquearTecla, true);
+}
+
+/**
+ * Libera el scroll solo cuando el gesto en curso ha terminado (la rueda o el dedo llevan
+ * `quieto` ms sin moverse). Así la inercia del gesto que abre la intro no mueve la página.
+ */
+export function reanudarCuandoQuieto(quieto = 380) {
+  const comprobar = () => {
+    if (performance.now() - ultimoGesto >= quieto) reanudarScroll();
+    else window.setTimeout(comprobar, 60);
+  };
+  comprobar();
 }
 
 export function reanudarScroll() {
