@@ -37,8 +37,14 @@ export function Galeria() {
   // Reparto en tres columnas; el orden de GALERIA se respeta para el visor.
   const cols = [0, 1, 2].map((c) => GALERIA.map((f, i) => ({ f, i })).filter((x) => x.i % 3 === c));
 
+  const visorAbierto = abierta !== null;
   useEffect(() => {
-    bloquearScroll(abierta !== null);
+    if (!visorAbierto) return;
+    bloquearScroll(true);
+    return () => bloquearScroll(false);
+  }, [visorAbierto]);
+
+  useEffect(() => {
     if (abierta === null) return;
     const tecla = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setAbierta(null);

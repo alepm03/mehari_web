@@ -55,7 +55,7 @@ function CocheMini({ noche }: { noche: boolean }) {
 export function SevillaExperience() {
   const { t } = useSitio();
   const [noche, setNoche] = useState(false);
-  const seccion = useRef<HTMLElement>(null);
+  const seccion = useRef<HTMLDivElement>(null);
   const marco = useRef<HTMLDivElement>(null);
   const camara = useRef<SVGGElement>(null);
   const coche = useRef<SVGGElement>(null);
@@ -149,28 +149,44 @@ export function SevillaExperience() {
   const tinta = noche ? 'var(--color-azahar)' : 'var(--color-tinta)';
 
   return (
-    <section
-      id="sevilla"
-      ref={seccion}
-      className={`relative transition-colors duration-1000 ${noche ? 'bg-tinta text-azahar' : 'bg-cal text-tinta'}`}
-      style={{ height: '520vh' }}
-    >
-      <div className="sticky top-0 flex h-[100svh] flex-col overflow-hidden lg:flex-row">
-        {/* Panel de texto */}
-        <div className="relative z-10 flex shrink-0 flex-col justify-between px-5 pb-5 pt-20 md:px-10 lg:w-[38%] lg:pb-10 lg:pt-28">
-          <div>
-            <Etiqueta className={noche ? 'text-naranja' : 'text-naranja-oscuro'}>{t(SEVILLA.etiqueta)}</Etiqueta>
-            <h2 className="titular mt-4 text-[clamp(2.4rem,4.6vw,4.8rem)]">
-              <ConCursiva texto={t(SEVILLA.titulo)} />
-            </h2>
-            <p className={`mt-4 hidden max-w-md text-[1rem] leading-relaxed md:block ${noche ? 'text-azahar/70' : 'text-tinta/70'}`}>{t(SEVILLA.intro)}</p>
+    <section id="sevilla" className={`relative transition-colors duration-1000 ${noche ? 'bg-tinta text-azahar' : 'bg-cal text-tinta'}`}>
+      {/* Cabecera: lo que no cambia con el recorrido */}
+      <header className="mx-auto grid max-w-[1400px] gap-12 px-5 pb-10 pt-28 md:px-10 md:pt-40 lg:grid-cols-12 lg:items-end">
+        <div className="lg:col-span-7">
+          <Etiqueta className={noche ? 'text-naranja' : 'text-naranja-oscuro'}>{t(SEVILLA.etiqueta)}</Etiqueta>
+          <h2 className="titular mt-5 text-[clamp(3rem,7vw,7.5rem)]">
+            <ConCursiva texto={t(SEVILLA.titulo)} />
+          </h2>
+          <p className={`mt-6 max-w-lg text-[1.05rem] leading-relaxed ${noche ? 'text-azahar/70' : 'text-tinta/70'}`}>{t(SEVILLA.intro)}</p>
+        </div>
+        <div className="lg:col-span-5">
+          <ul className={`divide-y border-y ${noche ? 'divide-azahar/15 border-azahar/15' : 'divide-tinta/12 border-tinta/12'}`}>
+            {SEVILLA.datos.map((d, i) => (
+              <li key={i} className="flex items-baseline gap-4 py-3.5 text-[0.98rem]">
+                <span className="etiqueta w-6 shrink-0 text-naranja">{String(i + 1).padStart(2, '0')}</span>
+                {t(d)}
+              </li>
+            ))}
+          </ul>
+          <p className={`mt-6 flex items-center gap-3 text-sm ${noche ? 'text-azahar/55' : 'text-tinta/55'}`}>
+            <span className="inline-block h-px w-10 bg-current" />
+            {t(SEVILLA.sigue)} ↓
+          </p>
+        </div>
+      </header>
 
+      <div ref={seccion} className="relative" style={{ height: '480vh' }}>
+      <div className="sticky top-0 flex h-[100svh] flex-col overflow-hidden lg:flex-row">
+        {/* Panel que acompaña al mapa: solo lo que cambia */}
+        <div className="relative z-10 flex shrink-0 flex-col justify-between gap-4 px-5 pb-4 pt-20 md:px-10 lg:w-[max(34%,410px)] lg:pb-12 lg:pt-28">
+          <div>
+            <p className="etiqueta opacity-55">{t(SEVILLA.rutaBase)}</p>
             {/* Tour de día o de noche */}
-            <div className={`mt-5 inline-grid grid-cols-2 rounded-full p-1 text-[0.85rem] md:mt-7 ${noche ? 'bg-azahar/10' : 'bg-tinta/[0.07]'}`} role="group">
+            <div className={`mt-4 inline-grid grid-cols-2 rounded-full p-1 text-[0.85rem] ${noche ? 'bg-azahar/10' : 'bg-tinta/[0.07]'}`} role="group">
               {(['monumental', 'romantico'] as const).map((k) => {
                 const on = (k === 'romantico') === noche;
                 return (
-                  <button key={k} onClick={() => setNoche(k === 'romantico')} aria-pressed={on} className="relative rounded-full px-4 py-2">
+                  <button key={k} onClick={() => setNoche(k === 'romantico')} aria-pressed={on} className="relative whitespace-nowrap rounded-full px-4 py-2">
                     {on && <motion.span layoutId="tour" className={`absolute inset-0 rounded-full ${noche ? 'bg-naranja' : 'bg-tinta'}`} transition={{ type: 'spring', stiffness: 400, damping: 34 }} />}
                     <span className={`relative flex items-center gap-2 ${on ? 'text-azahar' : ''}`}>
                       <span aria-hidden>{k === 'romantico' ? '☾' : '☀'}</span>
@@ -183,10 +199,9 @@ export function SevillaExperience() {
           </div>
 
           {/* Parada actual */}
-          <div className="mt-4 lg:mt-0">
-            <div className="flex items-center gap-4">
+          <div>
+            <div className="flex flex-wrap items-center gap-3">
               <p className="etiqueta tabular-nums opacity-60">
-                <span className="hidden md:inline">{t(SEVILLA.rutaBase)} · </span>
                 {t(SEVILLA.parada)} {String(activa + 1).padStart(2, '0')} / {PARADAS.length}
               </p>
               <AnimatePresence>
@@ -202,29 +217,27 @@ export function SevillaExperience() {
                 )}
               </AnimatePresence>
             </div>
-            <div className="relative mt-3 min-h-[5.5rem] overflow-hidden md:min-h-[7.5rem]">
-              <AnimatePresence mode="popLayout" initial={false}>
+            {/* Progreso por paradas */}
+            <div className="mt-3 flex gap-[3px]" aria-hidden>
+              {PARADAS.map((p, i) => (
+                <span key={p.id} className={`h-[3px] flex-1 rounded-full transition-colors duration-500 ${i <= activa ? 'bg-naranja' : noche ? 'bg-azahar/15' : 'bg-tinta/12'}`} />
+              ))}
+            </div>
+            <div className="mt-4 grid">
+              <AnimatePresence initial={false}>
                 <motion.div
                   key={parada.id}
-                  initial={{ y: '60%', opacity: 0 }}
-                  animate={{ y: '0%', opacity: 1 }}
-                  exit={{ y: '-60%', opacity: 0 }}
-                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className="[grid-area:1/1]"
+                  initial={{ y: 24, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.1 } }}
+                  exit={{ y: -24, opacity: 0, transition: { duration: 0.3, ease: 'easeIn' } }}
                 >
-                  <h3 className="titular text-[clamp(1.9rem,3.2vw,3.2rem)]">{t(parada.nombre)}</h3>
-                  <p className={`mt-2 text-[0.98rem] ${noche ? 'text-azahar/65' : 'text-tinta/65'}`}>{t(parada.nota)}</p>
+                  <h3 className="titular text-[clamp(1.7rem,2.7vw,2.8rem)] !leading-[1.02] [@media(max-height:700px)]:text-[1.7rem]">{t(parada.nombre)}</h3>
+                  <p className={`mt-2 text-[0.95rem] leading-snug ${noche ? 'text-azahar/65' : 'text-tinta/65'}`}>{t(parada.nota)}</p>
                 </motion.div>
               </AnimatePresence>
             </div>
-
-            <div className="mt-4 hidden flex-wrap gap-2 md:flex">
-              {SEVILLA.datos.map((d, i) => (
-                <span key={i} className={`rounded-full border px-3.5 py-1.5 text-[0.8rem] ${noche ? 'border-azahar/20 text-azahar/80' : 'border-tinta/15 text-tinta/75'}`}>
-                  {t(d)}
-                </span>
-              ))}
-            </div>
-            <div className="mt-6 hidden md:block">
+            <div className="mt-7 hidden md:block [@media(max-height:620px)]:hidden">
               <BotonPrincipal onClick={() => irA('contacto')}>{t(SEVILLA.reservar)}</BotonPrincipal>
             </div>
           </div>
@@ -348,6 +361,11 @@ export function SevillaExperience() {
 
 
         </div>
+      </div>
+      </div>
+
+      <div className="px-5 pb-20 md:hidden">
+        <BotonPrincipal onClick={() => irA('contacto')}>{t(SEVILLA.reservar)}</BotonPrincipal>
       </div>
     </section>
   );

@@ -25,6 +25,12 @@
       rel="stylesheet"
     />
     <link rel="preload" as="image" href="/img/llegada-hacienda.webp" />
+    <!-- La página empieza siempre arriba y sin scroll hasta que termina la intro (ver src/hooks/scroll.ts) -->
+    <style>html.cargando { overflow: hidden; }</style>
+    <script>
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      document.documentElement.classList.add('cargando');
+    </script>
   </head>
   <body>
     <div id="root"></div>

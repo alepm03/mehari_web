@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useState } from 'react';
-import { reduceMovimiento } from '../hooks/scroll';
+import { useEffect, useRef, useState } from 'react';
+import { pausarScroll, reanudarScroll, reduceMovimiento } from '../hooks/scroll';
 import { Logo } from './Logo';
 
 const FRANJAS = 9;
@@ -9,13 +9,16 @@ const EASE = [0.76, 0, 0.24, 1] as const;
 /** Telón de entrada: las costillas del Méhari se abren y descubren la página. */
 export function Intro({ alTerminar }: { alTerminar: () => void }) {
   const [visible, setVisible] = useState(() => !reduceMovimiento());
+  const conTelon = useRef(visible).current;
 
   useEffect(() => {
     if (!visible) {
+      // sin telón (movimiento reducido) se libera ya; con telón, al terminar de abrirse
+      if (!conTelon) reanudarScroll();
       alTerminar();
       return;
     }
-    document.documentElement.style.overflow = 'hidden';
+    pausarScroll();
     const t = setTimeout(() => setVisible(false), 1700);
     return () => clearTimeout(t);
   }, [visible, alTerminar]);
@@ -23,7 +26,7 @@ export function Intro({ alTerminar }: { alTerminar: () => void }) {
   return (
     <AnimatePresence
       onExitComplete={() => {
-        document.documentElement.style.overflow = '';
+        reanudarScroll();
         alTerminar();
       }}
     >
