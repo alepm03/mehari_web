@@ -2,6 +2,63 @@ import Lenis from 'lenis';
 import { useEffect } from 'react';
 
 let lenis: Lenis | null = null;
+let pausado = false;
+
+/** Al cargar o recargar, la página empieza siempre arriba (sin restaurar la posición anterior). */
+export function empezarArriba() {
+  if (typeof window === 'undefined') return;
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+  // Firefox y Safari pueden devolver la página desde la caché con la posición antigua
+  window.addEventListener('pageshow', (e) => e.persisted && window.scrollTo(0, 0));
+}
+
+let ultimoGesto = 0;
+const bloquearEvento = (e: Event) => {
+  ultimoGesto = performance.now();
+  e.preventDefault();
+  e.stopImmediatePropagation();
+};
+const OPCIONES = { passive: false, capture: true } as const;
+const TECLAS = new Set([' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End']);
+const bloquearTecla = (e: KeyboardEvent) => TECLAS.has(e.key) && e.preventDefault();
+
+/**
+ * Congela el scroll por completo (rueda, táctil y teclado) mientras dura la intro,
+ * para que nada se acumule y la web se descubra siempre desde el hero.
+ */
+export function pausarScroll() {
+  pausado = true;
+  lenis?.stop();
+  document.documentElement.style.overflow = 'hidden';
+  window.addEventListener('wheel', bloquearEvento, OPCIONES);
+  window.addEventListener('touchmove', bloquearEvento, OPCIONES);
+  window.addEventListener('keydown', bloquearTecla, true);
+}
+
+/**
+ * Libera el scroll solo cuando el gesto en curso ha terminado (la rueda o el dedo llevan
+ * `quieto` ms sin moverse). Así la inercia del gesto que abre la intro no mueve la página.
+ */
+export function reanudarCuandoQuieto(quieto = 380) {
+  const comprobar = () => {
+    if (performance.now() - ultimoGesto >= quieto) reanudarScroll();
+    else window.setTimeout(comprobar, 60);
+  };
+  comprobar();
+}
+
+export function reanudarScroll() {
+  pausado = false;
+  window.removeEventListener('wheel', bloquearEvento, OPCIONES);
+  window.removeEventListener('touchmove', bloquearEvento, OPCIONES);
+  window.removeEventListener('keydown', bloquearTecla, true);
+  document.documentElement.style.overflow = '';
+  document.documentElement.classList.remove('cargando');
+  window.scrollTo(0, 0);
+  lenis?.scrollTo(0, { immediate: true, force: true });
+  lenis?.start();
+}
 
 export const reduceMovimiento = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -17,6 +74,8 @@ export function useScrollSuave() {
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
+    // La intro se monta antes que este efecto: si ya pidió pausa, se respeta.
+    if (pausado) lenis.stop();
     return () => {
       cancelAnimationFrame(raf);
       lenis?.destroy();
@@ -32,7 +91,9 @@ export function irA(id: string) {
   else el.scrollIntoView({ behavior: reduceMovimiento() ? 'auto' : 'smooth' });
 }
 
+/** Para menús y visores. Mientras la intro tenga el scroll en pausa, no lo toca. */
 export function bloquearScroll(bloquear: boolean) {
+  if (pausado) return;
   if (lenis) (bloquear ? lenis.stop() : lenis.start());
   document.documentElement.style.overflow = bloquear ? 'hidden' : '';
 }
