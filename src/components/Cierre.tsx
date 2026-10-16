@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react';
 import { useRef, useState, type FormEvent } from 'react';
-import { CONTACTO, contactoListo, MARCAS, modoPresentacion, type IdMarca } from '../config/marca';
+import { CONTACTO, contactoListo, MARCA } from '../config/marca';
 import { CONTACTO_TEXTO, NAV, PREGUNTAS } from '../data/contenido';
 import { irA } from '../hooks/scroll';
 import { useSitio } from '../i18n/contexto';
@@ -54,7 +54,7 @@ const campo =
   'w-full border-0 border-b border-azahar/25 bg-transparent pb-3 pt-1 text-[1.05rem] text-azahar placeholder:text-azahar/35 focus:border-naranja focus:outline-none focus:ring-0 transition-colors';
 
 export function Contacto() {
-  const { t, marca } = useSitio();
+  const { t } = useSitio();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end end'] });
   const escala = useTransform(scrollYProgress, [0, 1], [1.25, 1]);
@@ -65,7 +65,7 @@ export function Contacto() {
     e.preventDefault();
     const d = new FormData(e.currentTarget);
     const texto = [
-      `Hola ${marca.nombreCompleto}:`,
+      `Hola, ${MARCA.nombre}:`,
       `${t(C.campos.nombre)}: ${d.get('nombre') || '-'}`,
       `${t(C.campos.servicio)}: ${d.get('servicio')}`,
       `${t(C.campos.fecha)}: ${d.get('fecha') || '-'}`,
@@ -90,7 +90,12 @@ export function Contacto() {
           <TitularMascara texto={t(C.titulo)} className="mt-6 text-[clamp(3rem,6.5vw,6.8rem)]" />
           <p className="mt-8 max-w-sm text-[1.05rem] leading-relaxed text-azahar/75">{t(C.intro)}</p>
           <ul className="mt-10 space-y-2 text-[0.98rem] text-azahar/80">
-            <li>{CONTACTO.whatsappVisible}</li>
+            <li>
+              <a href={`tel:${CONTACTO.telefono}`} className="enlace">
+                {CONTACTO.telefonoVisible}
+              </a>{' '}
+              · {t({ es: 'teléfono y WhatsApp', en: 'phone & WhatsApp' })}
+            </li>
             <li>{CONTACTO.email}</li>
             <li>{CONTACTO.instagram}</li>
             <li className="etiqueta pt-2 text-azahar/50">{CONTACTO.zona}</li>
@@ -164,7 +169,7 @@ export function Contacto() {
 }
 
 export function Pie() {
-  const { t, marca } = useSitio();
+  const { t } = useSitio();
   return (
     <footer className="relative overflow-hidden bg-cal px-5 pb-8 pt-20 md:px-10">
       <div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-10 md:flex-row md:items-end">
@@ -183,9 +188,9 @@ export function Pie() {
       <div className="costillas mx-auto mt-14 h-16 max-w-[1400px] rounded-xl md:h-24" />
       <div className="mx-auto mt-6 flex max-w-[1400px] flex-col justify-between gap-2 text-[0.8rem] text-tinta/55 md:flex-row">
         <p>
-          © {new Date().getFullYear()} {marca.nombreCompleto} · {CONTACTO.zona}
+          © {new Date().getFullYear()} {MARCA.nombre} · {MARCA.subtitulo} · <a href={`tel:${CONTACTO.telefono}`}>{CONTACTO.telefonoVisible}</a>
         </p>
-        <p>Citroën® y Méhari® son marcas de sus respectivos propietarios.</p>
+        <p>Méhari® es una marca de su respectivo propietario.</p>
       </div>
     </footer>
   );
@@ -218,26 +223,5 @@ export function BotonFlotante() {
       WhatsApp
       <span className="sr-only">{t({ es: 'Escríbenos', en: 'Message us' })}</span>
     </motion.a>
-  );
-}
-
-/** Solo en modo presentación (?marca=… o ?demo): cambia entre las propuestas de nombre. */
-export function SelectorMarca() {
-  const { marca, setMarca } = useSitio();
-  if (!modoPresentacion()) return null;
-  const ids: IdMarca[] = ['pendiente', 'azahar', 'getaway'];
-  return (
-    <div className="fixed bottom-5 left-5 z-40 flex items-center gap-1 rounded-full bg-azahar/90 p-1 text-[0.75rem] shadow-[0_12px_30px_-12px_rgba(43,33,26,.5)] backdrop-blur-md">
-      <span className="etiqueta px-2 !text-[0.6rem] text-tinta/50">Marca</span>
-      {ids.map((id) => (
-        <button
-          key={id}
-          onClick={() => setMarca(id)}
-          className={`rounded-full px-3 py-1.5 transition-colors ${marca.id === id ? 'bg-tinta text-azahar' : 'text-tinta hover:bg-tinta/10'}`}
-        >
-          {id === 'pendiente' ? 'Sin definir' : MARCAS[id].nombre}
-        </button>
-      ))}
-    </div>
   );
 }
