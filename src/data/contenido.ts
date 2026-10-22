@@ -14,7 +14,7 @@ export const NAV: { id: string; texto: Texto }[] = [
 export const CTA_PRESUPUESTO: Texto = { es: 'Pedir presupuesto', en: 'Request a quote' };
 
 export const HERO = {
-  supra: { es: 'Bodas y paseos en Citroën Méhari', en: 'Weddings & rides in a Citroën Méhari' },
+  supra: { es: 'Bodas y paseos en Méhari clásico', en: 'Weddings & rides in a classic Méhari' },
   lineas: [
     { es: 'El clásico', en: 'The classic' },
     { es: 'que enamora', en: 'everyone' },
@@ -97,8 +97,8 @@ export const TALLER = {
   etiqueta: { es: 'El coche', en: 'The car' },
   titulo: { es: 'Elegid *el vuestro*', en: 'Choose *yours*' },
   intro: {
-    es: 'Dos Citroën Méhari originales. Giradlo, cambiad el color, el techo y las flores.',
-    en: 'Two original Citroën Méharis. Spin it, change the colour, the roof and the flowers.',
+    es: 'Dos Méhari originales. Giradlo, cambiad el color, el techo y las flores.',
+    en: 'Two original Méharis. Spin it, change the colour, the roof and the flowers.',
   },
   arrastra: { es: 'Arrastra para girar', en: 'Drag to rotate' },
   color: { es: 'Color', en: 'Colour' },

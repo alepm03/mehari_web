@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { BotonFlotante, Contacto, Pie, Preguntas, SelectorMarca } from './components/Cierre';
+import { BotonFlotante, Contacto, Pie, Preguntas } from './components/Cierre';
 import { ElDia } from './components/ElDia';
 import { Galeria } from './components/Galeria';
 import { Hero } from './components/Hero';
@@ -34,7 +34,6 @@ function Pagina() {
       </main>
       <Pie />
       <BotonFlotante />
-      <SelectorMarca />
     </div>
   );
 }
