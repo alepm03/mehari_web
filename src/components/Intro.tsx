@@ -1,7 +1,7 @@
 import { animate, motion, useMotionValue, useMotionValueEvent, useSpring, useTransform, type MotionValue } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { pausarScroll, reanudarCuandoQuieto, reanudarScroll, reduceMovimiento } from '../hooks/scroll';
-import { MARCA } from '../config/marca';
+import { Logo } from './Logo';
 import { useSitio } from '../i18n/contexto';
 
 const FRANJAS = 9;
@@ -132,17 +132,11 @@ export function Intro({ alTerminar }: { alTerminar: () => void }) {
         style={{ opacity: opacidadMarca, scale: escalaMarca, filter: desenfoque }}
       >
         <motion.div
-          className="flex flex-col items-center gap-5"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
         >
-          <span className="titular" style={{ fontSize: 'clamp(4rem, 14vw, 9rem)' }}>
-            {MARCA.nombre}
-          </span>
-          <span className="etiqueta opacity-80" style={{ fontSize: 'clamp(0.8rem, 2.2vw, 1.05rem)' }}>
-            {MARCA.subtitulo}
-          </span>
+          <Logo variante="blanco" className="h-[min(60vw,22rem)]" />
         </motion.div>
       </motion.div>
 

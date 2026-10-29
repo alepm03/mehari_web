@@ -96,9 +96,16 @@ export function Contacto() {
               </a>{' '}
               · {t({ es: 'teléfono y WhatsApp', en: 'phone & WhatsApp' })}
             </li>
-            <li>{CONTACTO.email}</li>
-            <li>{CONTACTO.instagram}</li>
-            <li className="etiqueta pt-2 text-azahar/50">{CONTACTO.zona}</li>
+            <li>
+              <a href={`mailto:${CONTACTO.email}`} className="enlace">
+                {CONTACTO.email}
+              </a>
+            </li>
+            <li>
+              <a href={CONTACTO.instagramUrl} target="_blank" rel="noopener noreferrer" className="enlace">
+                {CONTACTO.instagram}
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -171,9 +178,9 @@ export function Contacto() {
 export function Pie() {
   const { t } = useSitio();
   return (
-    <footer className="relative overflow-hidden bg-cal px-5 pb-8 pt-20 md:px-10">
+    <footer className="costillas relative overflow-hidden px-5 pb-8 pt-20 text-azahar md:px-10">
       <div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-10 md:flex-row md:items-end">
-        <Logo grande />
+        <Logo variante="blanco" className="h-36 md:h-44" />
         <nav className="flex flex-wrap gap-x-8 gap-y-3 text-[0.95rem]">
           {NAV.map((n) => (
             <button key={n.id} onClick={() => irA(n.id)} className="enlace">
@@ -185,8 +192,7 @@ export function Pie() {
           </button>
         </nav>
       </div>
-      <div className="costillas mx-auto mt-14 h-16 max-w-[1400px] rounded-xl md:h-24" />
-      <div className="mx-auto mt-6 flex max-w-[1400px] flex-col justify-between gap-2 text-[0.8rem] text-tinta/55 md:flex-row">
+      <div className="mx-auto mt-20 flex max-w-[1400px] flex-col justify-between gap-2 text-[0.8rem] text-azahar/85 md:flex-row">
         <p>
           © {new Date().getFullYear()} {MARCA.nombre} · {MARCA.subtitulo} · <a href={`tel:${CONTACTO.telefono}`}>{CONTACTO.telefonoVisible}</a>
         </p>

@@ -21,8 +21,8 @@ export const HERO = {
     { es: 'a todos.', en: 'falls for.' },
   ] as Texto[],
   sub: {
-    es: 'Dos Méhari originales, uno naranja y otro beige, para el día de vuestra boda en Sevilla y Cádiz.',
-    en: 'Two original Méharis, one orange and one beige, for your wedding day in Seville and Cádiz.',
+    es: 'Dos Méhari originales, uno naranja y otro beige, para el día de vuestra boda.',
+    en: 'Two original Méharis, one orange and one beige, for your wedding day.',
   },
   verCoche: { es: 'Ver el coche', en: 'See the car' },
   diapositivas: [
@@ -74,8 +74,8 @@ export const EL_DIA = {
       num: '03',
       titulo: { es: 'La llegada', en: 'The arrival' },
       texto: {
-        es: 'Hasta la hacienda o el lugar de la celebración, por Sevilla y la provincia de Cádiz.',
-        en: 'All the way to the hacienda or venue, across Seville and the province of Cádiz.',
+        es: 'Hasta la hacienda o el lugar de la celebración, allí donde sea.',
+        en: 'All the way to the hacienda or venue, wherever it is.',
       },
       foto: '/img/arco.webp',
       foto2: '/img/hacienda-naranja.webp',
@@ -248,6 +248,21 @@ export const GALERIA: { src: string; alt: Texto; formato: 'v' | 'h' }[] = [
   { src: '/img/novios-beige.webp', alt: { es: 'Novios abrazados en el Méhari', en: 'Couple embracing in the Méhari' }, formato: 'h' },
   { src: '/img/beige-puerta.webp', alt: { es: 'El Méhari beige entra por la puerta de la hacienda', en: 'The beige Méhari arrives through the hacienda gate' }, formato: 'h' },
   { src: '/img/camino-palmeras.webp', alt: { es: 'El Méhari naranja por un camino de palmeras', en: 'The orange Méhari on a palm-lined road' }, formato: 'h' },
+  { src: '/img/novios-playa.webp', alt: { es: 'Los novios de pie en el Méhari naranja, junto al mar', en: 'The couple standing in the orange Méhari by the sea' }, formato: 'v' },
+  { src: '/img/novios-volante.webp', alt: { es: 'El novio al volante del Méhari naranja', en: 'The groom at the wheel of the orange Méhari' }, formato: 'h' },
+  { src: '/img/beso-atardecer.webp', alt: { es: 'Beso al atardecer junto al Méhari beige', en: 'A sunset kiss beside the beige Méhari' }, formato: 'h' },
+  { src: '/img/salida-iglesia-3.webp', alt: { es: 'Los novios suben al Méhari naranja a la salida de la iglesia', en: 'The couple climb into the orange Méhari outside the church' }, formato: 'v' },
+  { src: '/img/flores-girasoles.webp', alt: { es: 'Los novios tras las flores y los girasoles de las cestas', en: 'The couple behind the flowers and sunflowers in the baskets' }, formato: 'h' },
+  { src: '/img/naranja-cortijo.webp', alt: { es: 'El Méhari naranja en un cortijo blanco', en: 'The orange Méhari at a white cortijo' }, formato: 'h' },
+  { src: '/img/novios-brindis.webp', alt: { es: 'La novia brinda desde el Méhari naranja', en: 'The bride raises a toast from the orange Méhari' }, formato: 'h' },
+  { src: '/img/novios-sentados.webp', alt: { es: 'Los novios sentados en la trasera del Méhari beige', en: 'The couple sitting on the back of the beige Méhari' }, formato: 'v' },
+  { src: '/img/beso-ramo.webp', alt: { es: 'Beso y ramo en alto desde el Méhari naranja', en: 'A kiss and a raised bouquet in the orange Méhari' }, formato: 'h' },
+  { src: '/img/anillos.webp', alt: { es: 'Los novios enseñan los anillos en el Méhari', en: 'The couple show their rings in the Méhari' }, formato: 'h' },
+  { src: '/img/beige-playa.webp', alt: { es: 'El Méhari beige al atardecer en la playa', en: 'The beige Méhari at sunset on the beach' }, formato: 'h' },
+  { src: '/img/naranja-faro.webp', alt: { es: 'El Méhari naranja junto a un faro', en: 'The orange Méhari next to a lighthouse' }, formato: 'v' },
+  { src: '/img/novia-tiara.webp', alt: { es: 'La novia con tiara y el novio en el Méhari naranja', en: 'The bride in a tiara and the groom in the orange Méhari' }, formato: 'h' },
+  { src: '/img/naranja-llegada.webp', alt: { es: 'Los novios llegan en el Méhari naranja', en: 'The couple arrive in the orange Méhari' }, formato: 'h' },
+  { src: '/img/cesta-flores.webp', alt: { es: 'Flores en la cesta del Méhari, frente al campo', en: 'Flowers in the Méhari basket, facing the fields' }, formato: 'h' },
 ];
 
 export const GALERIA_TEXTO = {
@@ -275,8 +290,8 @@ export const PREGUNTAS = {
     {
       p: { es: '¿Dónde trabajáis?', en: 'Where do you operate?' },
       r: {
-        es: 'En Sevilla y en la provincia de Cádiz, sobre todo en iglesias y haciendas.',
-        en: 'In Seville and the province of Cádiz, mostly churches and haciendas.',
+        es: 'Vamos allí donde sea vuestra boda: iglesias, haciendas o cualquier lugar de celebración. Contadnos dónde es y os decimos la disponibilidad.',
+        en: 'We go wherever your wedding is: churches, haciendas or any venue. Tell us where and we’ll confirm availability.',
       },
     },
     {

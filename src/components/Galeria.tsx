@@ -30,12 +30,19 @@ export function Galeria() {
   const ref = useRef<HTMLElement>(null);
   const [abierta, setAbierta] = useState<number | null>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  const y1 = useTransform(scrollYProgress, [0, 1], ['6%', '-10%']);
-  const y2 = useTransform(scrollYProgress, [0, 1], ['16%', '-16%']);
-  const y3 = useTransform(scrollYProgress, [0, 1], ['2%', '-6%']);
+  // En píxeles y no en %: así el desfase no crece con el número de fotos y no deja hueco al final.
+  const y1 = useTransform(scrollYProgress, [0, 1], ['70px', '-120px']);
+  const y2 = useTransform(scrollYProgress, [0, 1], ['190px', '-190px']);
+  const y3 = useTransform(scrollYProgress, [0, 1], ['25px', '-70px']);
 
-  // Reparto en tres columnas; el orden de GALERIA se respeta para el visor.
-  const cols = [0, 1, 2].map((c) => GALERIA.map((f, i) => ({ f, i })).filter((x) => x.i % 3 === c));
+  // Reparto en tres columnas: cada foto va a la más corta (en anchos de columna, con el hueco). El orden de GALERIA se respeta para el visor.
+  const cols: Item[][] = [[], [], []];
+  const alturas = [0, 0, 0];
+  GALERIA.forEach((f, i) => {
+    const c = alturas.indexOf(Math.min(...alturas));
+    cols[c].push({ f, i });
+    alturas[c] += (f.formato === 'v' ? 4 / 3 : 3 / 4) + 0.08;
+  });
 
   const visorAbierto = abierta !== null;
   useEffect(() => {

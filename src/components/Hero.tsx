@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react';
+import { AnimatePresence, motion, useMotionTemplate, useScroll, useTransform } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { CTA_PRESUPUESTO, HERO } from '../data/contenido';
 import { irA } from '../hooks/scroll';
@@ -26,6 +26,9 @@ export function Hero({ listo }: { listo: boolean }) {
   const escala = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
   const subeTexto = useTransform(scrollYProgress, [0, 1], ['0%', '-40%']);
   const apagaTexto = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  // Banda del menú fija en pantalla: el hero está arriba del todo, así que basta con sumar el scroll.
+  const { scrollY } = useScroll();
+  const mascara = useMotionTemplate`linear-gradient(to bottom, transparent calc(${scrollY}px + 5.5rem), black calc(${scrollY}px + 9rem))`;
 
   const d = HERO.diapositivas[actual];
 
@@ -51,97 +54,100 @@ export function Hero({ listo }: { listo: boolean }) {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(43,33,26,.45)_0%,rgba(43,33,26,0)_28%,rgba(43,33,26,0)_45%,rgba(43,33,26,.78)_100%)]" />
       </motion.div>
 
-      <motion.div
-        className="relative z-10 flex h-full flex-col justify-end px-5 pb-10 text-azahar md:px-10 md:pb-14"
-        style={{ y: subeTexto, opacity: apagaTexto }}
-      >
-        <motion.p
-          className="etiqueta mb-6 opacity-90"
-          initial={{ opacity: 0, y: 12 }}
-          animate={listo ? { opacity: 0.9, y: 0 } : undefined}
-          transition={{ duration: 1, ease: EASE, delay: 0.1 }}
+      {/* El texto que sube se desvanece antes de pasar por debajo del menú */}
+      <motion.div className="relative z-10 h-full" style={{ maskImage: mascara, WebkitMaskImage: mascara }}>
+        <motion.div
+          className="flex h-full flex-col justify-end px-5 pb-10 text-azahar md:px-10 md:pb-14"
+          style={{ y: subeTexto, opacity: apagaTexto }}
         >
-          {t(HERO.supra)}
-        </motion.p>
-
-        <h1 className="titular text-[clamp(3.4rem,9.6vw,10.5rem)]">
-          <span className="sr-only">{HERO.lineas.map(t).join(' ')}</span>
-          {HERO.lineas.map((l, i) => (
-            <span key={i} aria-hidden className="block overflow-hidden pb-[0.1em] -mb-[0.1em]">
-              <motion.span
-                className={`block ${i === 1 ? 'pl-[6vw] italic' : ''} ${i === 2 ? 'pl-[15vw]' : ''}`}
-                initial={{ y: '105%' }}
-                animate={listo ? { y: '0%' } : undefined}
-                transition={{ duration: 1.3, ease: EASE, delay: 0.15 + i * 0.12 }}
-              >
-                {t(l)}
-              </motion.span>
-            </span>
-          ))}
-        </h1>
-
-        <div className="mt-8 flex flex-col gap-8 md:mt-10 md:flex-row md:items-end md:justify-between">
-          <motion.div
-            className="max-w-md"
-            initial={{ opacity: 0, y: 20 }}
-            animate={listo ? { opacity: 1, y: 0 } : undefined}
-            transition={{ duration: 1.1, ease: EASE, delay: 0.7 }}
+          <motion.p
+            className="etiqueta mb-6 opacity-90"
+            initial={{ opacity: 0, y: 12 }}
+            animate={listo ? { opacity: 0.9, y: 0 } : undefined}
+            transition={{ duration: 1, ease: EASE, delay: 0.1 }}
           >
-            <p className="text-[1.05rem] leading-relaxed text-azahar/90">{t(HERO.sub)}</p>
-            <div className="mt-7 flex flex-wrap items-center gap-5">
-              <BotonPrincipal onClick={() => irA('contacto')}>{t(CTA_PRESUPUESTO)}</BotonPrincipal>
-              <button onClick={() => irA('coche')} className="enlace pb-0.5 text-[0.95rem]">
-                {t(HERO.verCoche)}
-              </button>
-            </div>
-          </motion.div>
-
-          {/* Contador de diapositivas con barra de progreso */}
-          <motion.div
-            className="flex items-end gap-5"
-            initial={{ opacity: 0 }}
-            animate={listo ? { opacity: 1 } : undefined}
-            transition={{ duration: 1, delay: 1 }}
-          >
-            <div className="text-right">
-              <AnimatePresence mode="wait">
-                <motion.p
-                  key={actual}
-                  className="font-acento text-xl italic"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.5 }}
+            {t(HERO.supra)}
+          </motion.p>
+  
+          <h1 className="titular text-[clamp(3.4rem,9.6vw,10.5rem)]">
+            <span className="sr-only">{HERO.lineas.map(t).join(' ')}</span>
+            {HERO.lineas.map((l, i) => (
+              <span key={i} aria-hidden className="block overflow-hidden pb-[0.1em] -mb-[0.1em]">
+                <motion.span
+                  className={`block ${i === 1 ? 'pl-[6vw] italic' : ''} ${i === 2 ? 'pl-[15vw]' : ''}`}
+                  initial={{ y: '105%' }}
+                  animate={listo ? { y: '0%' } : undefined}
+                  transition={{ duration: 1.3, ease: EASE, delay: 0.15 + i * 0.12 }}
                 >
-                  {t(d.pie)}
-                </motion.p>
-              </AnimatePresence>
-              <div className="mt-3 flex gap-1.5">
-                {HERO.diapositivas.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActual(i)}
-                    className="relative h-[3px] w-10 overflow-hidden rounded-full bg-azahar/30"
-                    aria-label={`Foto ${i + 1}`}
-                  >
-                    {i === actual && listo && (
-                      <motion.span
-                        className="absolute inset-0 origin-left bg-azahar"
-                        initial={{ scaleX: 0 }}
-                        animate={{ scaleX: 1 }}
-                        transition={{ duration: DURACION / 1000, ease: 'linear' }}
-                      />
-                    )}
-                    {i < actual && <span className="absolute inset-0 bg-azahar/80" />}
-                  </button>
-                ))}
+                  {t(l)}
+                </motion.span>
+              </span>
+            ))}
+          </h1>
+  
+          <div className="mt-8 flex flex-col gap-8 md:mt-10 md:flex-row md:items-end md:justify-between">
+            <motion.div
+              className="max-w-md"
+              initial={{ opacity: 0, y: 20 }}
+              animate={listo ? { opacity: 1, y: 0 } : undefined}
+              transition={{ duration: 1.1, ease: EASE, delay: 0.7 }}
+            >
+              <p className="text-[1.05rem] leading-relaxed text-azahar/90">{t(HERO.sub)}</p>
+              <div className="mt-7 flex flex-wrap items-center gap-5">
+                <BotonPrincipal onClick={() => irA('contacto')}>{t(CTA_PRESUPUESTO)}</BotonPrincipal>
+                <button onClick={() => irA('coche')} className="enlace pb-0.5 text-[0.95rem]">
+                  {t(HERO.verCoche)}
+                </button>
               </div>
-            </div>
-            <p className="etiqueta tabular-nums opacity-80">
-              {String(actual + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
-            </p>
-          </motion.div>
-        </div>
+            </motion.div>
+  
+            {/* Contador de diapositivas con barra de progreso */}
+            <motion.div
+              className="flex items-end gap-5"
+              initial={{ opacity: 0 }}
+              animate={listo ? { opacity: 1 } : undefined}
+              transition={{ duration: 1, delay: 1 }}
+            >
+              <div className="text-right">
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={actual}
+                    className="font-acento text-xl italic"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    {t(d.pie)}
+                  </motion.p>
+                </AnimatePresence>
+                <div className="mt-3 flex gap-1.5">
+                  {HERO.diapositivas.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActual(i)}
+                      className="relative h-[3px] w-10 overflow-hidden rounded-full bg-azahar/30"
+                      aria-label={`Foto ${i + 1}`}
+                    >
+                      {i === actual && listo && (
+                        <motion.span
+                          className="absolute inset-0 origin-left bg-azahar"
+                          initial={{ scaleX: 0 }}
+                          animate={{ scaleX: 1 }}
+                          transition={{ duration: DURACION / 1000, ease: 'linear' }}
+                        />
+                      )}
+                      {i < actual && <span className="absolute inset-0 bg-azahar/80" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <p className="etiqueta tabular-nums opacity-80">
+                {String(actual + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+              </p>
+            </motion.div>
+          </div>
+        </motion.div>
       </motion.div>
     </section>
   );

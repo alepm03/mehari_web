@@ -42,7 +42,7 @@ export function Nav() {
           } ${claro ? 'text-azahar' : 'text-tinta'}`}
         >
           <button onClick={() => ir('inicio')} className="relative z-10" aria-label="Inicio">
-            <Logo />
+            <Logo variante={claro ? 'blanco' : 'naranja'} className="h-12 md:h-14" />
           </button>
 
           <nav className="hidden items-center gap-9 lg:flex" aria-label="Principal">

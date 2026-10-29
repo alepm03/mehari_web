@@ -1,16 +1,20 @@
 import { MARCA } from '../config/marca';
 
+type Variante = 'naranja' | 'blanco' | 'tinta';
+
 /**
- * Logotipo provisional: las costillas y el nombre. El símbolo definitivo se elige entre las cinco
- * propuestas de Mehari/marca/propuestas/mehari-we.html; cuando se decida, se sustituye aquí.
+ * Logo aprobado por el cliente el 2026-10-28 (Mehari/marca/logo/, versión 03). Se usa tal cual:
+ * naranja sobre fondo claro, blanco sobre naranja, tinta o foto, y tinta sobre beige o cal.
  */
-export function Logo({ className = '', grande = false }: { className?: string; grande?: boolean }) {
+export function Logo({ variante = 'naranja', className = 'h-14' }: { variante?: Variante; className?: string }) {
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <span className={`costillas inline-block ${grande ? 'h-14 w-14 rounded-[12px]' : 'h-7 w-7 rounded-[7px]'}`} />
-      <span className="titular" style={{ fontSize: grande ? '3.4rem' : '1.45rem', lineHeight: 1 }}>
-        {MARCA.nombre}
-      </span>
-    </span>
+    <img
+      src={`/logo/mehari-we-${variante}.svg`}
+      alt={`${MARCA.nombre} · ${MARCA.subtitulo}`}
+      width={1549}
+      height={1579}
+      className={`block w-auto ${className}`}
+      draggable={false}
+    />
   );
 }
